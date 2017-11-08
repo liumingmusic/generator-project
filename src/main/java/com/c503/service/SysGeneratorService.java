@@ -47,8 +47,12 @@ public class SysGeneratorService {
 		for (String tableName : tableNames) {
 			// 查询表信息
 			Map<String, String> table = queryTable(tableName);
+			System.out.println(table);
 			// 查询列信息
 			List<Map<String, String>> columns = queryColumns(tableName);
+			for (Map<String, String> map : columns) {
+                System.out.println(map);
+            }
 			// 生成代码
 			GenUtils.generatorCode(table, columns, zip);
 		}

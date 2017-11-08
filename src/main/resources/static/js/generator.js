@@ -55,6 +55,25 @@ var vm = new Vue({
 				return ;
 			}
 			location.href = "sys/generator/code?tables=" + JSON.stringify(tableNames);
+		},
+		dynamic: function(){
+			$("#jqGrid").jqGrid("setGridParam",{
+				url:"sys/generator/dsynamicList",
+				page: 1,
+				postData:{
+					_search:false,
+					limit:10,
+					page:1,
+					ip:"localhost",
+					port:3306,
+					database:"renren_fast",
+					username:"root",
+					password:"root",
+					type:"mysql",
+					tableName: null
+				}}
+			).trigger("reloadGrid"); 
+			vm.q.tableName = "";
 		}
 	}
 });

@@ -13,9 +13,9 @@ spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://172.25.1.47:3306/generator_fast?useUnicode=true&characterEncoding=UTF-8
+        url: jdbc:mysql://127.0.0.1:3306/generator_fast?useUnicode=true&characterEncoding=UTF-8
         username: root
-        password: 
+        password: root
     jackson:
         time-zone: GMT+8
         date-format: yyyy-MM-dd HH:mm:ss
