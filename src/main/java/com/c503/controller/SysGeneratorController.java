@@ -1,7 +1,7 @@
 package com.c503.controller;
 
-import java.io.IOException;
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,19 +56,35 @@ public class SysGeneratorController {
     
     /**
      * 生成代码
+     * 
+     * @throws Exception
      */
     @RequestMapping("/code")
     public void code(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
+        throws Exception {
+        
         String[] tableNames = new String[] {};
         String tables = request.getParameter("tables");
         tableNames = JSON.parseArray(tables).toArray(tableNames);
-        byte[] data = sysGeneratorService.generatorCode(tableNames);
+        
+        // 链接参数
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("ip", request.getParameter("ip"));
+        map.put("port", request.getParameter("port"));
+        map.put("database", request.getParameter("database"));
+        map.put("username", request.getParameter("username"));
+        map.put("password", request.getParameter("password"));
+        map.put("type", request.getParameter("type"));
+        
+        // TODO 调用实现代码 根据数据库类型判断mysql oracle pgsql
+        byte[] data = MysqlGenerator.generatorCodeByMysql(tableNames, map);
+        
         response.reset();
         response.setHeader("Content-Disposition",
             "attachment; filename=\"generator.zip\"");
         response.addHeader("Content-Length", "" + data.length);
         response.setContentType("application/octet-stream; charset=UTF-8");
+        
         IOUtils.write(data, response.getOutputStream());
     }
     
@@ -89,14 +105,21 @@ public class SysGeneratorController {
         Query query = new Query(params);
         // 数据库链接配置
         Connection con = MysqlGenerator.getMysqlConn(params);
-        // 数据查询
-        List<Map<String, Object>> list = MysqlGenerator.queryList(con, query);
-        int total = MysqlGenerator.queryTotal(con, query);
-        PageUtils pageUtil =
-            new PageUtils(list, total, query.getLimit(), query.getPage());
-        // 关闭数据库
-        con.close();
-        return R.ok().put("page", pageUtil);
+        // 链接判断
+        if (null == con) {
+            return R.error("链接失败，请查看填写的数据是否正确");
+        }
+        else {
+            // 数据查询
+            List<Map<String, Object>> list =
+                MysqlGenerator.queryList(con, query);
+            int total = MysqlGenerator.queryTotal(con, query);
+            PageUtils pageUtil =
+                new PageUtils(list, total, query.getLimit(), query.getPage());
+            // 关闭数据库
+            con.close();
+            return R.ok().put("page", pageUtil);
+        }
     }
     
     /**

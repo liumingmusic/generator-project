@@ -20,25 +20,48 @@ package com.c503.datasources;
 public class DynamicDataEntity {
     
     // 数据库ip地址
-    private String ip;
+    private String ip = "127.0.0.1";
     
     // 用户名
-    private String name;
+    private String name = "root";
     
     // 用户名
-    private String password;
+    private String password = "root";
     
     // 数据库端口号
-    private String port;
+    private String port = "3306";
     
     // 数据库名字
-    private String database;
+    private String database = "generator_fast";
     
     // 数据库类型 mysql oracle pg
-    private String type;
+    private String type = "mysql";
     
     public DynamicDataEntity() {
         super();
+    }
+    
+    public DynamicDataEntity(String ip, String name, String password,
+        String port, String database, String type) {
+        super();
+        if (ip.trim().length() > 0) {
+            this.ip = ip;
+        }
+        if (name.trim().length() > 0) {
+            this.name = name;
+        }
+        if (password.trim().length() > 0) {
+            this.password = password;
+        }
+        if (port.trim().length() > 0) {
+            this.port = port;
+        }
+        if (database.trim().length() > 0) {
+            this.database = database;
+        }
+        if (type.trim().length() > 0) {
+            this.type = type;
+        }
     }
     
     public DynamicDataEntity(String ip, String port, String database,
@@ -52,7 +75,7 @@ public class DynamicDataEntity {
     
     public String getDriver() {
         String driver = "";
-        if (type.equals("mysql")) {
+        if (getType().equals("mysql")) {
             driver = "com.mysql.jdbc.Driver";
         }
         return driver;
@@ -60,8 +83,9 @@ public class DynamicDataEntity {
     
     public String getUrl() {
         String url = "";
-        if (type.equals("mysql")) {
-            url = "jdbc:mysql://" + ip + ":3306/" + database
+        if (getType().equals("mysql")) {
+            url = "jdbc:mysql://" + getIp() + ":" + getPort() + "/"
+                + getDatabase()
                 + "?useUnicode=true&characterEncoding=UTF-8&useSSL=false";
         }
         return url;
@@ -72,7 +96,9 @@ public class DynamicDataEntity {
     }
     
     public void setIp(String ip) {
-        this.ip = ip;
+        if (ip.trim() != "") {
+            this.ip = ip;
+        }
     }
     
     public String getName() {
@@ -80,7 +106,9 @@ public class DynamicDataEntity {
     }
     
     public void setName(String name) {
-        this.name = name;
+        if (name.trim() != "") {
+            this.name = name;
+        }
     }
     
     public String getPassword() {
@@ -88,7 +116,9 @@ public class DynamicDataEntity {
     }
     
     public void setPassword(String password) {
-        this.password = password;
+        if (password.trim() != "") {
+            this.password = password;
+        }
     }
     
     public String getPort() {
@@ -96,7 +126,9 @@ public class DynamicDataEntity {
     }
     
     public void setPort(String port) {
-        this.port = port;
+        if (port.trim() != "") {
+            this.port = port;
+        }
     }
     
     public String getDatabase() {
@@ -104,7 +136,9 @@ public class DynamicDataEntity {
     }
     
     public void setDatabase(String database) {
-        this.database = database;
+        if (database.trim() != "") {
+            this.database = database;
+        }
     }
     
     public String getType() {
@@ -112,7 +146,9 @@ public class DynamicDataEntity {
     }
     
     public void setType(String type) {
-        this.type = type;
+        if (type.trim() != "") {
+            this.type = type;
+        }
     }
     
 }

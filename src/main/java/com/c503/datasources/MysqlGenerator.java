@@ -7,6 +7,7 @@
  */
 package com.c503.datasources;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,6 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.io.IOUtils;
+
+import com.c503.utils.GenUtils;
 
 /**
  * 
@@ -41,19 +47,21 @@ public class MysqlGenerator {
     public static Connection getMysqlConn(Map<String, Object> map) {
         Connection con = null;
         // 获取参数信息
-        String ip = (String) map.get("ip"), port = (String) map.get("port"),
-            database = (String) map.get("database"),
-            username = (String) map.get("username"),
-            password = (String) map.get("password"),
-            type = (String) map.get("type");
+        String ip = (String) map.get("ip");
+        String port = (String) map.get("port");
+        String database = (String) map.get("database");
+        String username = (String) map.get("username");
+        String password = (String) map.get("password");
+        String type = (String) map.get("type");
         // 数据库链接实体封装
         DynamicDataEntity dynamicDataEntity =
-            new DynamicDataEntity(ip, port, database, type);
+            new DynamicDataEntity(ip, username, password, port, database, type);
         try {
             // 加载驱动程序
             Class.forName(dynamicDataEntity.getDriver());
-            con = DriverManager
-                .getConnection(dynamicDataEntity.getUrl(), username, password);
+            con = DriverManager.getConnection(dynamicDataEntity.getUrl(),
+                dynamicDataEntity.getName(),
+                dynamicDataEntity.getPassword());
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -220,6 +228,38 @@ public class MysqlGenerator {
         // 6.关闭链接
         rs.close();
         return mapList;
+    }
+    
+    /**
+     * 
+     * 〈下载代码模板〉
+     * 〈功能详细描述〉
+     * 
+     * @param tableNames
+     * @param map
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public static byte[] generatorCodeByMysql(String[] tableNames,
+        Map<String, Object> map)
+        throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ZipOutputStream zip = new ZipOutputStream(outputStream);
+        // 数据库链接
+        Connection con = MysqlGenerator.getMysqlConn(map);
+        // 循环查询数据库表资源
+        for (String tableName : tableNames) {
+            // 查询表信息
+            Map<String, String> table =
+                MysqlGenerator.queryTable(con, tableName);
+            // 查询列信息
+            List<Map<String, String>> columns =
+                MysqlGenerator.queryColumns(con, tableName);
+            // 生成代码
+            GenUtils.generatorCode(table, columns, zip);
+        }
+        IOUtils.closeQuietly(zip);
+        return outputStream.toByteArray();
     }
     
 }
