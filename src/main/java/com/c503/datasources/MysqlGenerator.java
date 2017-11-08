@@ -56,11 +56,9 @@ public class MysqlGenerator {
                 .getConnection(dynamicDataEntity.getUrl(), username, password);
         }
         catch (SQLException e) {
-            System.err.println("数据库链接异常...");
             e.printStackTrace();
         }
         catch (ClassNotFoundException e) {
-            System.err.println("数据库驱动异常...");
             e.printStackTrace();
         }
         return con;
