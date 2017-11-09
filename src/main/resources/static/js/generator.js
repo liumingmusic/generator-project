@@ -31,8 +31,8 @@ $(function() {
 			width : 100
 		} ],
 		viewrecords : true,
-		height : 700,
-		rowNum : 24,
+		height : 450,
+		rowNum : 12,
 		rowList : [ 10, 30, 50, 100, 200 ],
 		rownumbers : true,
 		rownumWidth : 25,
@@ -58,6 +58,7 @@ $(function() {
 		}
 	});
 });
+
 // vue事件绑定
 var vm = new Vue({
 	el : '#generator-main',
