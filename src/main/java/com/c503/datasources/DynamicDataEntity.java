@@ -19,6 +19,7 @@ package com.c503.datasources;
  */
 public class DynamicDataEntity {
     
+    // FIXME 后续需要读取配置文件并且数据库链接使用数据库连接池
     // 数据库ip地址
     private String ip = "127.0.0.1";
     
